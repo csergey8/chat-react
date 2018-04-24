@@ -26,7 +26,7 @@ app.post('/users', (req, res) => {
         res.sendStatus(error.statusCode).json(error)
       }
     })
-};
+})
 
 app.post('/authenticate', (req, res) => {
   const { grant_type } = req.body
