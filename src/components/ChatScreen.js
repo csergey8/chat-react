@@ -3,6 +3,7 @@ import Chatkit from '@pusher/chatkit';
 import MessageList from './MessageList';
 import SendMessageForm from './SendMessageForm';
 import TypingIndicator from './TypingIndicator';
+import WhosOnlineList from './WhosOnlineList';
 
 class ChatScreen extends Component {
     constructor(props) {
@@ -18,6 +19,7 @@ class ChatScreen extends Component {
     }
 
     sendTypingEvent() {
+        console.log(this.state.currentUser);
         this.state.currentUser
             .isTypingIn({ roomId: this.state.currentRoom })
             .catch(err => console.log('error', err));
@@ -31,17 +33,19 @@ class ChatScreen extends Component {
     }
 
     componentDidMount() {
-        const chatManager = new Chatkit({
+        console.log(this.props.currentUsername + '!!!!');
+        const chatManager = new Chatkit.ChatManager({
             instanceLocator: 'v1:us1:fb42d51f-260c-47be-a0b8-05d73e4aae3a',
             userId: this.props.currentUsername,
             tokenProvider: new Chatkit.TokenProvider({
-                url: 'http://localhost:3001/authenticate'
+                url: 'http://127.0.0.1:3001/authenticate'
             })
-        });
-
+        })
+        console.log(chatManager);
         chatManager
             .connect()
             .then(currentUser => {
+                console.log(currentUser);
                 this.setState({ currentUser });
                 return currentUser.subscribeToRoom({
                     roomId: 6895567,
@@ -63,14 +67,17 @@ class ChatScreen extends Component {
                                     username => username !== user.name
                                 ),
                             })
-                        }
+                        },
+                        onUserCameOnLine: () => this.forceUpdate(),
+                        onUserWentOffLine: () => this.forceUpdate(),
+                        onUserJoined: () => this.forceUpdate()
                     }
                 })
             })
             .then(currentRoom => {
                 this.setState({ currentRoom })
             })
-            .catch(err => console.log('error', err));
+            .catch(err => console.log('error 2222', err));
     }
 
 
@@ -105,7 +112,10 @@ class ChatScreen extends Component {
             <div style={styles.container}>
                 <div style={styles.chatContainer}>
                     <aside style={styles.whosOnlineListContainer}>
-                        <h2>Who's online PLACEHOLDER</h2>
+                        <WhosOnlineList
+                            currentUser={this.state.currentUser}
+                            users={this.state.currentRoom.users}
+                        />
                     </aside>
                     <section style={styles.chatListContainer}>
                         <MessageList

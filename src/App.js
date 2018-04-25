@@ -13,14 +13,16 @@ class App extends Component {
   }
 
   onUsernameSubmitted(username) {
-    fetch('http://localhost:3001/users', {
-      method:'POST',
+    console.log('fetching');
+    fetch('http://127.0.0.1:3001/users', {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ username })
     })
       .then(res => {
+        console.log('YES')
         this.setState({
           currentUsername: username,
           currentScreen: 'ChatScreen'
@@ -32,10 +34,10 @@ class App extends Component {
 
   render() {
     if (this.state.currentScreen === 'WhatIsYourUsernameScreen') {
-    return <UsernameForm onSubmit={this.onUsernameSubmitted} />
+    return <UsernameForm onSubmit={this.onUsernameSubmitted} />;
     }
     if (this.state.currentScreen === 'ChatScreen') {
-      return <ChatScreen currentUsername={this.state.currentScreen} />
+      return <ChatScreen currentUsername={this.state.currentUsername} />
     }
   }
 };
