@@ -33,15 +33,16 @@ class ChatScreen extends Component {
     }
 
     componentDidMount() {
-        console.log(this.props.currentUsername + '!!!!');
+        const tokenProvider = new Chatkit.TokenProvider({
+            url: 'http://127.0.0.1:3001/authenticate'
+        });
         const chatManager = new Chatkit.ChatManager({
             instanceLocator: 'v1:us1:fb42d51f-260c-47be-a0b8-05d73e4aae3a',
             userId: this.props.currentUsername,
-            tokenProvider: new Chatkit.TokenProvider({
-                url: 'http://127.0.0.1:3001/authenticate'
-            })
+            tokenProvider
         })
-        console.log(chatManager);
+        console.log(tokenProvider);
+        console.log("-------------------??--------");
         chatManager
             .connect()
             .then(currentUser => {

@@ -34,8 +34,8 @@ app.post('/users', (req, res) => {
 
 app.post('/authenticate', (req, res) => {
   const { grant_type } = req.body;
-  res.json(chatkit.authenticate({ grant_type, userId: req.query.user_id}))
-  console.log(res);
+  const authData = chatkit.authenticate({ grant_type, userId: req.query.user_id});
+  res.send(authData.body);
 })
 
 const PORT = 3001
